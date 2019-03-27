@@ -1,85 +1,302 @@
 <!doctype html>
 <html>
   <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-	<title>Python Type Hints</title>
+    <title>Python Type Hints</title>
 
-	<link rel="stylesheet" href="css/reveal.css">
-	<link rel="stylesheet" href="css/theme/solarized.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/solarized.css">
 
-	<!-- Theme used for syntax highlighting of code -->
-	<link rel="stylesheet" href="lib/css/solarized-light.css">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/solarized-light.css">
 
-	<!-- Printing and PDF exports -->
-	<script>
-	  var link = document.createElement( 'link' );
-	  link.rel = 'stylesheet';
-	  link.type = 'text/css';
-	  link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-	  document.getElementsByTagName( 'head' )[0].appendChild( link );
-	</script>
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
   </head>
   <body>
-	<div class="reveal">
-	  <div class="slides">
-		<section>
+    <div class="reveal">
+      <div class="slides">
+        <section>
           <h1>Python Type Hints</h1>
-          <p>PEP 484</p>
         </section>
-		<section data-transition="slide-in none-out">
+
+        <section data-transition="slide-in none-out">
           What's wrong?
           <pre>
             <code data-trim data-noescape>
-                lunatic = Lunatic(resource.name)
+              lunatic = Lunatic(resource.name)
 
-                if "fc" in [l.name for l in resource.labels]:
-                    if not _has_online_fc_ports(lunatic):
-                        reboot_host(resource)
-                        if not _has_online_fc_ports(lunatic):
-                            raise NoOnlineFCPorts()
-                else:
-                    if _has_online_fc_ports(resource):
-                        raise NoFcLabelSet()
+              if "fc" in [l.name for l in resource.labels]:
+                  if not _has_online_fc_ports(lunatic):
+                      reboot_host(resource)
+                      if not _has_online_fc_ports(lunatic):
+                          raise NoOnlineFCPorts()
+              else:
+                  if _has_online_fc_ports(resource):
+                      raise NoFcLabelSet()
             </code>
           </pre>
         </section>
+
         <section data-transition="fade-in slide-out">
           :(
           <pre>
             <code data-trim data-noescape data-line-numbers="3" class="hljs">
-                lunatic = Lunatic(resource.name)
+              lunatic = Lunatic(resource.name)
 
-                if "fc" in [l.name for l in resource.labels]:
-                    if not _has_online_fc_ports(lunatic):
-                        reboot_host(resource)
-                        if not _has_online_fc_ports(lunatic):
-                            raise NoOnlineFCPorts()
-                else:
-                    if <mark>_has_online_fc_ports(resource)</mark>:
-                        raise NoFcLabelSet()
+              if "fc" in [l.name for l in resource.labels]:
+                  if not _has_online_fc_ports(lunatic):
+                      reboot_host(resource)
+                      if not _has_online_fc_ports(lunatic):
+                          raise NoOnlineFCPorts()
+              else:
+                  if <mark>_has_online_fc_ports(resource)</mark>:
+                      raise NoFcLabelSet()
             </code>
           </pre>
+          <aside class="notes">
+            <ul>
+              <li>Such things happen when refactoring</li>
+              <li>Pylint cannot detect that</li>
+              <li>I did not have a test for this bad path</li>
+            </ul>
+          </aside>
         </section>
-	  </div>
-	</div>
 
-	<script src="lib/js/head.min.js"></script>
-	<script src="js/reveal.js"></script>
+        <section>
+          <section>
+            <h1>Type Hints</h1>
+          </section>
 
-	<script>
-	  // More info about config & dependencies:
-	  // - https://github.com/hakimel/reveal.js#configuration
-	  // - https://github.com/hakimel/reveal.js#dependencies
-	  Reveal.initialize({
-		dependencies: [
-		  { src: 'plugin/markdown/marked.js' },
-		  { src: 'plugin/markdown/markdown.js' },
-		  { src: 'plugin/notes/notes.js', async: true },
-		  { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-		]
-	  });
-	</script>
+          <section>
+            PEP 484 (Python 3.5+)
+            <pre>
+              <code data-trim>
+                def greeting(name: str) -> str:
+                    return 'Hello ' + name
+              </code>
+            </pre>
+
+            PEP 526 (Python 3.6+)
+            <pre>
+              <code data-trim>
+                captain: str
+                captain = "Picard"
+              </code>
+            </pre>
+          </section>
+
+          <section>
+            <p>But what does it do?</p>
+            <p class="fragment">Nothing!</p>
+            <p class="fragment">Almost nothing</p>
+            <p class="fragment">It adds <code>__annotations__</code> to the annotated object</p>
+
+            <aside class="notes">
+              <ul>
+                <li>This isn't some strict mode that turns Python into a type safe language</li>
+                <li>It's a preperation for A/C. We'll talk about 3 different A/Cs</li>
+              </ul>
+            </aside>
+          </section>
+
+          <section>
+            <h2>The typing module</h2>
+            <code data-noescape>
+              <ul>
+                <li>Sequence[int], Set[int], Iterable[int]</li>
+                <li>Mapping[int, str]</li>
+                <li>Callable[[int], None]</li>
+                <li>Optional[float]</li>
+                <li>Any</li>
+              </ul>
+            </code>
+
+            <aside class="notes">
+              <ul>
+                <li>Whatever is unknown is considered Any</li>
+              </ul>
+            </aside>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h1>MyPy</h1>
+          </section>
+
+          <section>
+            demo
+
+            <aside class="notes">
+              <ul>
+                <li>Static analysis tool, similar to Pylint</li>
+                <li>However, its philosphy is different</li>
+                <li>It understands that you will want to gradually start using it</li>
+                <li>It understands that the world isn't perfect</li>
+                <li>Reading the documentation is important</li>
+                <li>Pitfalls means uncaught bugs. Nothing bad will happen to the app</li>
+              </ul>
+            </aside>
+          </section>
+
+          <section>
+            <h2>External libraries</h2>
+
+            <aside class="notes">
+              You should look at the missing libraries and decide what to do with them
+            </aside>
+          </section>
+
+          <section>
+            Doesn't check not annotated code
+          </section>
+
+          <section>
+            Treats unknown types as Any
+
+            <aside class="notes">
+              One option is to try to avoid passing other types between functions without wrapping them
+            </aside>
+          </section>
+
+          <section>
+            Subclassing Any
+
+            <aside class="notes">
+              This is really bad with SQLAlchemy. The bug at the beginning was not detected.
+            </aside>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h1>Pydantic</h1>
+          </section>
+
+          <section>
+            What's the most spoken language in the hi-tech industry?
+
+            JSON
+          </section>
+
+          <section>
+            Server side
+
+            <aside class="notes">
+              <ul>
+                <li>Bad parameters lead to 500 or other bugs</li>
+                <li>Not ergonomic</li>
+              </ul>
+            </aside>
+          </section>
+
+          <section>
+            JSONSCHEMA
+
+            <aside class="notes">
+              Awful syntax. We still have a dict.
+            </aside>
+          </section>
+
+          <section>
+            Flask simple API
+
+            <aside class="notes">
+              Better. Doesn't help with client side. We still have a dict.
+            </aside>
+          </section>
+
+          <section>
+            We can turn the dict into <code>Munch</code>
+
+            But munches aren't type safe
+          </section>
+
+          <section>
+            Marshmellow
+
+            Nice! But still isn't type safe
+          </section>
+
+          <section>
+            Pydantic
+
+            <aside class="notes">
+              <ul>
+                <li>Works with PyPi by definition</li>
+                <li>Runtime tool</li>
+              </ul>
+            </aside>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h1>Enforce</h1>
+          </section>
+
+          <section>
+            demo
+
+            <aside class="notes">
+              <ul>
+                <li>Doesn't seem maintained</li>
+                <li>Runtime tool</li>
+                <li>I don't use it. Maybe it suits for API</li>
+              </ul>
+            </aside>
+          </section>
+        </section>
+
+        <section>
+          <h2>Conclustion</h2>
+          <ul>
+            <li class="fragment">Duck typing is nice until you refactor your ducks</li>
+            <li class="fragment">Type annotations do nothing on their own</li>
+            <li class="fragment"><b>MyPy</b> will statically check your codes</li>
+            <li class="fragment">
+              <b>Pydantic</b> will make it easier to validate your output
+              <ul><li>It also makes it type safe and plays will with MyPy</li></ul>
+            </li>
+            <li class="fragment">I'm not sure about the future of <b>Enforce</b>, but maybe similar projects will appear in the future</li>
+          </ul>
+
+          <aside class="notes">
+            MyPy does not replace tests or pylint.
+          </aside>
+        </section>
+
+        <section>
+          <h1>Questions?</h1>
+        </section>
+
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+        ]
+      });
+    </script>
   </body>
 </html>
