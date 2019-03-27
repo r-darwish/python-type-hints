@@ -29,7 +29,8 @@
         </section>
 
         <section data-transition="slide-in none-out">
-          What's wrong?
+          <h2>Test your sight</h2>
+          <p>Find the bug</p>
           <pre>
             <code data-trim data-noescape>
               lunatic = Lunatic(resource.name)
@@ -47,7 +48,8 @@
         </section>
 
         <section data-transition="fade-in slide-out">
-          :(
+          <h2>Test your sight</h2>
+          <p>&nbsp;</p>
           <pre>
             <code data-trim data-noescape data-line-numbers="3" class="hljs">
               lunatic = Lunatic(resource.name)
@@ -58,7 +60,7 @@
                       if not _has_online_fc_ports(lunatic):
                           raise NoOnlineFCPorts()
               else:
-                  if <mark>_has_online_fc_ports(resource)</mark>:
+                  if _has_online_fc_ports(<mark>resource</mark>):
                       raise NoFcLabelSet()
             </code>
           </pre>
@@ -126,6 +128,17 @@
               </ul>
             </aside>
           </section>
+        </section>
+
+        <section>
+          <h2>Make auto complete great again</h2>
+
+          <aside class="notes">
+            <ul>
+              <li>It's not about being lazy</li>
+              <li>Supported by most editors</li>
+            </ul>
+          </aside>
         </section>
 
         <section>
@@ -262,17 +275,15 @@
           <ul>
             <li class="fragment">Duck typing is nice until you refactor your ducks</li>
             <li class="fragment">Type annotations do nothing on their own</li>
-            <li class="fragment"><b>MyPy</b> will statically check your codes</li>
+            <li class="fragment">They improve auto complete and code navigation</li>
+            <li class="fragment"><b>MyPy</b> checks the code statically</li>
             <li class="fragment">
-              <b>Pydantic</b> will make it easier to validate your output
-              <ul><li>It also makes it type safe and plays will with MyPy</li></ul>
+              <b>Pydantic</b> makes it easier to validate input
+              <ul><li>It also plays will with MyPy</li></ul>
             </li>
             <li class="fragment">I'm not sure about the future of <b>Enforce</b>, but maybe similar projects will appear in the future</li>
+            <li class="fragment">None of these tools replace testing</li>
           </ul>
-
-          <aside class="notes">
-            MyPy does not replace tests or pylint.
-          </aside>
         </section>
 
         <section>
