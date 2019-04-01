@@ -94,12 +94,12 @@
                 captain = "Picard"
               </code>
             </pre>
-          </section>
 
-          <section>
-            <p>But what does it do?</p>
-            <p class="fragment">Nothing!</p>
-            <p class="fragment">Almost nothing</p>
+            <p>
+              <span class="fragment">But what does it do?</span>
+              <span class="fragment"> Nothing!</span>
+              <span class="fragment">Almost...</span>
+            </p>
             <p class="fragment">It adds <code>__annotations__</code> to the annotated object</p>
 
             <aside class="notes">
@@ -109,13 +109,12 @@
               </ul>
             </aside>
           </section>
-
           <section>
             <h2>The typing module</h2>
             <code data-noescape>
               <ul>
-                <li>Sequence[int], Set[int], Iterable[int]</li>
-                <li>Mapping[int, str]</li>
+                <li>List[int], Set[int], Iterable[int]</li>
+                <li>Dict[int, str]</li>
                 <li>Callable[[int], None]</li>
                 <li>Optional[float]</li>
                 <li>Any</li>
@@ -147,10 +146,36 @@
           </section>
 
           <section>
-            demo
+            <pre>
+              <code data-trim>
+                from datetime import timedelta
+
+                class Cow:
+                    def moo(self, volume: float, duration: timedelta) -> None:
+                        pass
+
+                class Horse:
+                    pass
+
+                def yanti(parazi: Cow) -> None:
+                    parazi.moo(4, 5)
+
+                yanti(Horse())
+              </code>
+            </pre>
+            <pre class="fragment">
+demo.py:11: error:
+    Argument 2 to "moo" of "Cow" has incompatible type "int";
+    expected "timedelta"
+
+demo.py:13: error:
+    Argument 1 to "yanti" has incompatible type "Horse";
+    expected "Cow"
+            </pre>
 
             <aside class="notes">
               <ul>
+                <li>Pylint will not detect this</li>
                 <li>Static analysis tool, similar to Pylint</li>
                 <li>However, its philosphy is different</li>
                 <li>It understands that you will want to gradually start using it</li>
@@ -162,11 +187,59 @@
           </section>
 
           <section>
-            <h2>External libraries</h2>
+            <pre>
+              <code data-trim>
+                from datetime import timedelta
+                from munch import Munch
+
+                class Cow:
+                    def moo(self, volume: float, duration: timedelta) -> None:
+                        pass
+
+                class Horse:
+                    pass
+
+                def yanti(parazi: Cow) -> None:
+                    parazi.moo(4, timedelta(seconds=1))
+
+                yanti(Munch())
+              </code>
+            </pre>
+            <pre class="fragment" style="font-size: 14pt">
+demo2.py:2: error: Cannot find module named 'munch'
+demo2.py:2: note: See
+https://mypy.readthedocs.io/en/latest/running_mypy.html#missing-imports
+            </pre>
 
             <aside class="notes">
               You should look at the missing libraries and decide what to do with them
             </aside>
+          </section>
+
+          <section>
+            <pre>
+              <code data-trim>
+                from datetime import timedelta
+                from requests import get
+
+                class Cow:
+                    def moo(self, volume: float, duration: timedelta) -> None:
+                        pass
+
+                class Horse:
+                    pass
+
+                def yanti(parazi: Cow) -> None:
+                    parazi.moo(4, timedelta(seconds=1))
+
+                yanti(get("https://cow"))
+              </code>
+            </pre>
+            <pre class="fragment">
+demo3.py:14: error:
+  Argument 1 to "yanti" has incompatible type "Response";
+  expected "Cow"
+            </pre>
           </section>
 
           <section>
