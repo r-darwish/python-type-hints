@@ -243,10 +243,42 @@ demo3.py:14: error:
           </section>
 
           <section>
-            Doesn't check not annotated code
+            <pre>
+              <code data-trim>
+                class Cow:
+                    def moo(self, volume: float, duration: timedelta) -> None:
+                        pass
+
+                class Horse:
+                    pass
+
+                def yanti():
+                    parazi = Cow()
+                    parazi.moo("4", timedelta(seconds=1))
+              </code>
+            </pre>
+            Doesn't check unannotated code
           </section>
 
           <section>
+            <pre>
+              <code data-trim>
+                from datetime import timedelta
+                from munch import Munch
+
+                class Cow:
+                    def moo(self, volume: float, duration: timedelta) -> None:
+                        pass
+
+                class Horse:
+                    pass
+
+                def yanti(parazi: Cow) -> None:
+                    parazi.moo(4, timedelta(seconds=1))
+
+                yanti(Munch())
+              </code>
+            </pre>
             Treats unknown types as Any
 
             <aside class="notes">
@@ -255,7 +287,25 @@ demo3.py:14: error:
           </section>
 
           <section>
-            Subclassing Any
+            <pre>
+              <code data-trim>
+                from datetime import timedelta
+                from munch import Munch
+
+                class Cow:
+                    def moo(self, volume: float, duration: timedelta) -> None:
+                        pass
+
+                class Horse(Munch):
+                    pass
+
+                def yanti(parazi: Cow) -> None:
+                    parazi.moo(4, timedelta(seconds=1))
+
+                yanti(Horse())
+              </code>
+            </pre>
+            Also unknown base classes
 
             <aside class="notes">
               This is really bad with SQLAlchemy. The bug at the beginning was not detected.
