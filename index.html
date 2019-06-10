@@ -321,11 +321,29 @@ demo3.py:14: error:
           <section>
             What's the most spoken language in the hi-tech industry?
 
-            JSON
+            <span class="fragment">
+              JSON
+            </span>
           </section>
 
           <section>
             Server side
+
+            <pre>
+              <code data-trim class="python">
+                def create_ownership():
+                    data = request.json["ownership"]
+                    session_id = data.get("session_id", None)
+                    resource_type = data.get("resource_type", None)
+                    resource_id = data.get("resource", None)
+                    labels = data.get("labels", [])
+                    timeout = data.get("timeout")
+                    exclusive = data.get("exclusive", False)
+                    user_id = data.get("user", g.identity.id)
+                    behalf_of_id = data.get("behalf_of")
+                    resource_data: Dict[str, Any] = json.loads(data.get("resource_data", "{}"))
+              </code>
+            </pre>
 
             <aside class="notes">
               <ul>
@@ -338,16 +356,33 @@ demo3.py:14: error:
           <section>
             JSONSCHEMA
 
+            <pre>
+              <code data-trim class="python">
+                @validate_schema(
+                    {
+                        "properties": {
+                            "ownership": {
+                                "type": "object",
+                                "properties": {
+                                    "session_id": {"type": "string"},
+                                    "user": {"type": "integer"},
+                                    "resource_type": {"type": "string"},
+                                    "labels": {"type": "array", "items": {"type": "string"}},
+                                    "resource": {"type": "integer"},
+                                    "timeout": {"type": "integer"},
+                                    "exclusive": {"type": "boolean"},
+                                },
+                            }
+                        },
+                        "required": ["ownership"],
+                    }
+                )
+                def create_ownership():
+              </code>
+            </pre>
+
             <aside class="notes">
               Awful syntax. We still have a dict.
-            </aside>
-          </section>
-
-          <section>
-            Flask simple API
-
-            <aside class="notes">
-              Better. Doesn't help with client side. We still have a dict.
             </aside>
           </section>
 
@@ -360,15 +395,47 @@ demo3.py:14: error:
           <section>
             Marshmellow
 
-            Nice! But still isn't type safe
+            <pre>
+              <code data-trim>
+                class ArtistSchema(Schema):
+                    name = fields.Str()
+
+                class AlbumSchema(Schema):
+                    title = fields.Str()
+                    release_date = fields.Date()
+                    artist = fields.Nested(ArtistSchema())
+
+                bowie = dict(name='David Bowie')
+                album = dict(artist=bowie, title='Hunky Dory', release_date=date(1971, 12, 17))
+
+                schema = AlbumSchema()
+                result = schema.dump(album)
+              </code>
+            </pre>
           </section>
 
           <section>
             Pydantic
 
+            <pre>
+              <code data-trim>
+                from datetime import datetime
+                from typing import List
+                from pydantic import BaseModel
+
+                class User(BaseModel):
+                    id: int
+                    name = 'John Doe'
+                    signup_ts: datetime = None
+                    friends: List[int] = []
+
+                external_data = {'id': '123', 'signup_ts': '2017-06-01 12:22', 'friends': [1, '2', b'3']}
+                user = User(**external_data)
+              </code>
+            </pre>
             <aside class="notes">
               <ul>
-                <li>Works with PyPi by definition</li>
+                <li>Works with MyPy by definition</li>
                 <li>Runtime tool</li>
               </ul>
             </aside>
@@ -381,7 +448,14 @@ demo3.py:14: error:
           </section>
 
           <section>
-            demo
+            <pre>
+              <code data-trim>
+                @runtime_validation
+                class Sample(typing.Generic[T]):
+                    def get(self, data: T) -> T:
+                        return data
+              </code>
+            </pre>
 
             <aside class="notes">
               <ul>
