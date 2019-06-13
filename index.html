@@ -31,8 +31,7 @@
         <section data-transition="slide-in none-out">
           <h2>Test your sight</h2>
           <p>Find the bug</p>
-          <pre>
-            <code data-trim data-noescape>
+          <pre><code data-trim data-noescape>
               lunatic = Lunatic(resource.name)
 
               if "fc" in [l.name for l in resource.labels]:
@@ -43,15 +42,13 @@
               else:
                   if _has_online_fc_ports(resource):
                       raise NoFcLabelSet()
-            </code>
-          </pre>
+          </code></pre>
         </section>
 
         <section data-transition="fade-in slide-out">
           <h2>Test your sight</h2>
           <p>&nbsp;</p>
-          <pre>
-            <code data-trim data-noescape data-line-numbers="3" class="hljs">
+          <pre><code data-trim data-noescape data-line-numbers="3" class="hljs">
               lunatic = Lunatic(resource.name)
 
               if "fc" in [l.name for l in resource.labels]:
@@ -62,8 +59,7 @@
               else:
                   if _has_online_fc_ports(<mark>resource</mark>):
                       raise NoFcLabelSet()
-            </code>
-          </pre>
+          </code></pre>
           <aside class="notes">
             <ul>
               <li>Such things happen when refactoring</li>
@@ -80,20 +76,16 @@
 
           <section>
             PEP 484 (Python 3.5+)
-            <pre>
-              <code data-trim>
+            <pre><code data-trim>
                 def greeting(name: str) -> str:
                     return 'Hello ' + name
-              </code>
-            </pre>
+            </code></pre>
 
             PEP 526 (Python 3.6+)
-            <pre>
-              <code data-trim>
+            <pre><code data-trim>
                 captain: str
                 captain = "Picard"
-              </code>
-            </pre>
+            </code></pre>
 
             <p>
               <span class="fragment">But what does it do?</span>
@@ -146,8 +138,7 @@
           </section>
 
           <section>
-            <pre>
-              <code data-trim>
+            <pre><code data-trim>
                 from datetime import timedelta
 
                 class Cow:
@@ -161,8 +152,7 @@
                     parazi.moo(4, 5)
 
                 yanti(Horse())
-              </code>
-            </pre>
+            </code></pre>
             <pre class="fragment">
 demo.py:11: error:
     Argument 2 to "moo" of "Cow" has incompatible type "int";
@@ -187,8 +177,7 @@ demo.py:13: error:
           </section>
 
           <section>
-            <pre>
-              <code data-trim>
+            <pre><code data-trim>
                 from datetime import timedelta
                 from munch import Munch
 
@@ -203,8 +192,7 @@ demo.py:13: error:
                     parazi.moo(4, timedelta(seconds=1))
 
                 yanti(Munch())
-              </code>
-            </pre>
+            </code></pre>
             <pre class="fragment" style="font-size: 14pt">
 demo2.py:2: error: Cannot find module named 'munch'
 demo2.py:2: note: See
@@ -217,8 +205,7 @@ https://mypy.readthedocs.io/en/latest/running_mypy.html#missing-imports
           </section>
 
           <section>
-            <pre>
-              <code data-trim>
+            <pre><code data-trim>
                 from datetime import timedelta
                 from requests import get
 
@@ -233,8 +220,7 @@ https://mypy.readthedocs.io/en/latest/running_mypy.html#missing-imports
                     parazi.moo(4, timedelta(seconds=1))
 
                 yanti(get("https://cow"))
-              </code>
-            </pre>
+            </code></pre>
             <pre class="fragment">
 demo3.py:14: error:
   Argument 1 to "yanti" has incompatible type "Response";
@@ -243,8 +229,7 @@ demo3.py:14: error:
           </section>
 
           <section>
-            <pre>
-              <code data-trim>
+            <pre><code data-trim>
                 class Cow:
                     def moo(self, volume: float, duration: timedelta) -> None:
                         pass
@@ -255,8 +240,7 @@ demo3.py:14: error:
                 def yanti():
                     parazi = Cow()
                     parazi.moo("4", timedelta(seconds=1))
-              </code>
-            </pre>
+            </code></pre>
             Doesn't check unannotated code
 
             <aside class="notes">
@@ -268,8 +252,7 @@ demo3.py:14: error:
           </section>
 
           <section>
-            <pre>
-              <code data-trim>
+            <pre><code data-trim>
                 from datetime import timedelta
                 from munch import Munch
 
@@ -284,8 +267,7 @@ demo3.py:14: error:
                     parazi.moo(4, timedelta(seconds=1))
 
                 yanti(Munch())
-              </code>
-            </pre>
+            </code></pre>
             Treats unknown types as Any
 
             <aside class="notes">
@@ -294,8 +276,7 @@ demo3.py:14: error:
           </section>
 
           <section>
-            <pre>
-              <code data-trim>
+            <pre><code data-trim>
                 from datetime import timedelta
                 from munch import Munch
 
@@ -310,8 +291,7 @@ demo3.py:14: error:
                     parazi.moo(4, timedelta(seconds=1))
 
                 yanti(Horse())
-              </code>
-            </pre>
+            </code></pre>
             Also unknown base classes
 
             <aside class="notes">
@@ -336,8 +316,7 @@ demo3.py:14: error:
           <section>
             Server side
 
-            <pre>
-              <code data-trim class="python">
+            <pre><code data-trim class="python">
                 def create_ownership():
                     data = request.json["ownership"]
                     session_id = data.get("session_id", None)
@@ -348,9 +327,7 @@ demo3.py:14: error:
                     exclusive = data.get("exclusive", False)
                     user_id = data.get("user", g.identity.id)
                     behalf_of_id = data.get("behalf_of")
-                    resource_data: Dict[str, Any] = json.loads(data.get("resource_data", "{}"))
-              </code>
-            </pre>
+            </code></pre>
 
             <aside class="notes">
               <ul>
@@ -363,30 +340,27 @@ demo3.py:14: error:
           <section>
             JSONSCHEMA
 
-            <pre>
-              <code data-trim class="python">
-                @validate_schema(
-                    {
-                        "properties": {
-                            "ownership": {
-                                "type": "object",
-                                "properties": {
-                                    "session_id": {"type": "string"},
-                                    "user": {"type": "integer"},
-                                    "resource_type": {"type": "string"},
-                                    "labels": {"type": "array", "items": {"type": "string"}},
-                                    "resource": {"type": "integer"},
-                                    "timeout": {"type": "integer"},
-                                    "exclusive": {"type": "boolean"},
-                                },
-                            }
-                        },
-                        "required": ["ownership"],
-                    }
-                )
-                def create_ownership():
-              </code>
-            </pre>
+            <pre><code data-trim class="python" style="font-size: 15px;">
+@validate_schema({
+    "properties": {
+        "ownership": {
+            "type": "object",
+            "properties": {
+                "session_id": {"type": "string"},
+                "user": {"type": "integer"},
+                "resource_type": {"type": "string"},
+                "labels": {
+                     "type": "array", "items": {"type": "string"}},
+                "resource": {"type": "integer"},
+                "timeout": {"type": "integer"},
+                "exclusive": {"type": "boolean"},
+            },
+        }
+    },
+    "required": ["ownership"],
+})
+def create_ownership():
+            </code></pre>
 
             <aside class="notes">
               Awful syntax. We still have a dict.
@@ -402,8 +376,7 @@ demo3.py:14: error:
           <section>
             Marshmellow
 
-            <pre>
-              <code data-trim>
+            <pre><code data-trim>
                 class ArtistSchema(Schema):
                     name = fields.Str()
 
@@ -413,33 +386,32 @@ demo3.py:14: error:
                     artist = fields.Nested(ArtistSchema())
 
                 bowie = dict(name='David Bowie')
-                album = dict(artist=bowie, title='Hunky Dory', release_date=date(1971, 12, 17))
+                album = dict(
+                    artist=bowie, title='Hunky Dory',
+                    release_date=date(1971, 12, 17))
 
                 schema = AlbumSchema()
                 result = schema.dump(album)
-              </code>
-            </pre>
+            </code></pre>
           </section>
 
           <section>
             Pydantic
 
-            <pre>
-              <code data-trim>
-                from datetime import datetime
-                from typing import List
-                from pydantic import BaseModel
-
+            <pre><code data-trim>
                 class User(BaseModel):
                     id: int
                     name = 'John Doe'
                     signup_ts: datetime = None
                     friends: List[int] = []
 
-                external_data = {'id': '123', 'signup_ts': '2017-06-01 12:22', 'friends': [1, '2', b'3']}
+                external_data = {
+                    'id': '123',
+                    'signup_ts': '2017-06-01 12:22',
+                    'friends': [1, '2', b'3']
+                }
                 user = User(**external_data)
-              </code>
-            </pre>
+            </code></pre>
             <aside class="notes">
               <ul>
                 <li>Works with MyPy by definition</li>
@@ -455,8 +427,7 @@ demo3.py:14: error:
           </section>
 
           <section>
-            <pre>
-              <code data-trim class="python">
+            <pre><code data-trim data-noescape class="python" style="font-size: 15px">
                 >>> import enforce
                 >>>
                 >>> @enforce.runtime_validation
@@ -467,18 +438,19 @@ demo3.py:14: error:
                 Hello World
                 >>>
                 >>> foo(5)
-                Traceback (most recent call last):
-                  File "<stdin>", line 1, in <module>
-                  File "/home/william/.local/lib/python3.5/site-packages/enforce/decorators.py", line 106, in universal
-                  _args, _kwargs = enforcer.validate_inputs(parameters)
-                  File "/home/william/.local/lib/python3.5/site-packages/enforce/enforcers.py", line 69, in validate_inputs
-                  raise RuntimeTypeError(exception_text)
-                  enforce.exceptions.RuntimeTypeError:
-                  The following runtime type errors were encountered:
-                  Argument 'text' was not of type <class 'str'>. Actual type was <class 'int'>.
-              </code>
-            </pre>
+            </code></pre>
 
+            <pre><code data-trim class="nohighlight" style="font-size: 15px">
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/home/william/.local/lib/python3.5/site-packages/enforce/decorators.py&quot;, line 106, in universal
+  _args, _kwargs = enforcer.validate_inputs(parameters)
+  File &quot;/home/william/.local/lib/python3.5/site-packages/enforce/enforcers.py&quot;, line 69, in validate_inputs
+  raise RuntimeTypeError(exception_text)
+  enforce.exceptions.RuntimeTypeError:
+  The following runtime type errors were encountered:
+  Argument &#x27;text&#x27; was not of type &lt;class &#x27;str&#x27;&gt;. Actual type was &lt;class &#x27;int&#x27;&gt;.
+            </code></pre>
             <aside class="notes">
               <ul>
                 <li>Doesn't seem maintained</li>
@@ -520,6 +492,8 @@ demo3.py:14: error:
       // - https://github.com/hakimel/reveal.js#configuration
       // - https://github.com/hakimel/reveal.js#dependencies
       Reveal.initialize({
+        controls: false,
+        progress: true,
         dependencies: [
           { src: 'plugin/markdown/marked.js' },
           { src: 'plugin/markdown/markdown.js' },
